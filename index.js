@@ -12,7 +12,7 @@ app.use('/api/cars', car);
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 
-mongoose.connect('mongodb://localhost:27017/carsdb')
+mongoose.connect('mongodb://localhost:27017/carsdb2')
   .then(() => console.log('Conectado a MongoDB'))
   .catch(() => console.log('No se ha conectado a MongoDB'))
 
