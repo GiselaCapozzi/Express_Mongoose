@@ -25,60 +25,28 @@ router
 
 // POST
 router
-  .post('/', (req, res) => {
-    let cardId = coches.length;
-    const { company, model, year } = req.body;
-    let coche = {
-      id: cardId,
-      company: company,
-      model: model,
-      year: year
-    }
-    coches.push(coche);
-    res.status(201).send(coche);
-  });
-
-router
-  .post('/2', (req, res) => {
-    const { company, model, year } = req.body;
-    if (!company || company.length < 3) {
-      res.status(400).send('Introduce la empresa correcta');
-      return;
-    }
-
-    let cardId = coches.length;
-    let coche = {
-      id: cardId,
-      company: company,
-      model: model,
-      year: year
-    }
-
-    coches.push(coche);
-    res.status(201).send(coche);
-  });
-
-router
-  .post('/3', [
+  .post('/', [
     check('company').isLength({ min: 3 }),
     check('model').isLength({ min: 3 })
-  ], (req, res) => {
+  ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { company, model, year } = req.body;
-    let carId = coches.length;
-    let coche = {
-      _id: carId,
+    const { company, model, year, sold, price, extras } = req.body;
+
+    const car = new Car({
       company: company,
       model: model,
-      year: year
-    }
+      year: year,
+      sold: sold,
+      price: price,
+      extras: extras
+    })
 
-    coches.push(coche);
-    res.status(201).send(coche);
+    const result = await car.save();
+    res.status(201).send(result);
   });
 
 // PUT
