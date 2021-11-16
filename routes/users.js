@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const { check, validationResult } = require('express-validator');
 
 router
   .get('/', async (req, res) => {
     const users = await User
       .find()
-    // if(!users) return res.status(204).send('Aun no hay usuarios')
+    if(!users) return res.status(204).send('Aun no hay usuarios')
 
     res.send(users);
   })
@@ -24,15 +23,7 @@ router
   })
 
 router
-  .post('/', [
-    check('name').isLength({ min: 3 }),
-    check('email').isLength({ min: 3 })
-  ], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
+  .post('/', async (req, res) => {
     const { name, isCustomer, email, password } = req.body;
     const user = new User({
       name: name,
@@ -46,16 +37,7 @@ router
   });
 
 router
-  .put('/:id', [
-    check('name').isLength({ min: 3 }),
-    check('email').isLength({ min: 3 })
-  ],
-    async (req, res) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-      }
-
+  .put('/:id', async (req, res) => {
       const { id } = req.params;
       const { name, isCustomer, email, password } = req.body;
       const user = await User
@@ -73,7 +55,7 @@ router
         return res.status(404).send('El usuario con ese ID no existe')
       }
 
-      res.status(204).send();
+      res.status(204).send('Actualizado correctamente');
     })
 
 router
