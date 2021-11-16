@@ -9,8 +9,8 @@ router
   .get('/', async (req, res) => {
     const cars = await Car
       .find();
-      res.send(cars);
-      console.log(cars);
+    res.send(cars);
+    console.log(cars);
   });
 
 router
@@ -19,14 +19,14 @@ router
     const car = await Car
       .findById(id)
 
-      if(!car) return res.status(404).send('No hemos encontrado un coche con ese ID');
-      res.send(car);
+    if (!car) return res.status(404).send('No hemos encontrado un coche con ese ID');
+    res.send(car);
   })
 
 // POST
 router
   .post('/', async (req, res) => {
-    
+
     const car = new Car({
       company: req.body.company,
       model: req.body.model,
@@ -45,25 +45,30 @@ router
   .put('/:id', [
     check('company').isLength({ min: 3 }),
     check('model').isLength({ min: 3 })
-  ], (req, res) => {
+  ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
     const { id } = req.params;
-    const coche = coches.find(coche => coche.id === parseInt(id));
+    const car = await Car
+      .findByIdAndUpdate(id, {
+        company: req.body.company,
+        model: req.body.model,
+        year: req.body.year,
+        sold: req.body.sold,
+        price: req.body.price,
+        extras: req.body.extras
+      }, {
+        new: true
+      })
 
-    if (!coche) {
+    if (!car) {
       return res.status(404).send('El coche con ese id no esta');
     }
 
-    const { company, model, year } = req.body;
-    coche.company = company;
-    coche.model = model;
-    coche.year = year;
-
-    res.status(204).send();
+    res.status(204).send(car);
   });
 
 // DELETE
