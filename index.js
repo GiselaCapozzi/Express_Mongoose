@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use(date);
 
-app.use('/api/cars', car);
-app.use('/api/users', user);
+app.use('/api/cars/', car);
+app.use('/api/users/', user);
 
 mongoose.connect('mongodb://localhost:27017/carsdb2')
   .then(() => console.log('Conectado a MongoDB'))

@@ -24,6 +24,7 @@ router
   })
 
 // POST
+// Modelo de datos Normalizado
 router
   .post('/', async (req, res) => {
 
