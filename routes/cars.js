@@ -25,24 +25,15 @@ router
 
 // POST
 router
-  .post('/', [
-    check('company').isLength({ min: 3 }),
-    check('model').isLength({ min: 3 })
-  ], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
-    const { company, model, year, sold, price, extras } = req.body;
-
+  .post('/', async (req, res) => {
+    
     const car = new Car({
-      company: company,
-      model: model,
-      year: year,
-      sold: sold,
-      price: price,
-      extras: extras
+      company: req.body.company,
+      model: req.body.model,
+      year: req.body.year,
+      sold: req.body.sold,
+      price: req.body.price,
+      extras: req.body.extras
     })
 
     const result = await car.save();
