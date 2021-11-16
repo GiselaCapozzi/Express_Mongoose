@@ -73,16 +73,14 @@ router
 
 // DELETE
 router
-  .delete('/:id', (req, res) => {
+  .delete('/:id',  async (req, res) => {
     const { id } = req.params;
-    const coche = coches.find(coche => coche.id === parseInt(id));
+    const car = await Car
+      .findByIdAndDelete(id)
 
-    if (!coche) {
+    if (!car) {
       return res.status(404).send('El coche con ese ID no existe');
     }
-
-    const index = coches.indexOf(coche);
-    coches.splice(index, 1);
 
     res.status(200).send('El coche ha sido borrado correctamente');
   })
