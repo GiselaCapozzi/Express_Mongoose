@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
+
 const User = require('../models/user');
 
 router
@@ -24,24 +26,28 @@ router
 
 router
   .post('/', async (req, res) => {
-    const { name, isCustomer, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     let user = await User
       .findOne({ email: email })
-    if(user) return res.status(302).send('Ese usuario ya existe')
+    if(user) return res.status(302).send('Ese usuario ya existe');
+
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(password, salt);
 
     user = new User({
       name: name,
       isCustomer: false,
       email: email,
-      password: password
+      password: hashPassword
     })
 
     const result = await user.save();
     res.status(201).send({
       _id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      password: user.password
     });
   });
 
