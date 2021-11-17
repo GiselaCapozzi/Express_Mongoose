@@ -3,14 +3,16 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const Car = require('../models/car');
+const { Company } = require('../models/company');
 
 // GET
 router
   .get('/', async (req, res) => {
     const cars = await Car
-      .find();
+      .find()
+      .populate('company', 'name country')
     res.send(cars);
-    console.log(cars);
+    // console.log(cars);
   });
 
 router
@@ -24,8 +26,33 @@ router
   })
 
 // POST
-// Modelo de datos Normalizado
+
+// Modelo de datos Embebido
 router
+  .post('/', async (req, res) => {
+    const { id } = req.body;
+
+    const company = await Company
+      .findById(id)
+
+    if (!company) return res.status(400).send('No tenemos ese fabricante')
+
+    const { model, year, sold, price, extras } = req.body;
+    const car = new Car({
+      company,
+      model,
+      year,
+      sold,
+      price,
+      extras
+    })
+
+    const result = await car.save();
+    res.status(201).send(result);
+  })
+
+// Modelo de datos Normalizado
+/* router
   .post('/', async (req, res) => {
 
     const car = new Car({
@@ -39,7 +66,7 @@ router
 
     const result = await car.save();
     res.status(201).send(result);
-  });
+  }); */
 
 // PUT
 router
@@ -74,7 +101,7 @@ router
 
 // DELETE
 router
-  .delete('/:id',  async (req, res) => {
+  .delete('/:id', async (req, res) => {
     const { id } = req.params;
     const car = await Car
       .findByIdAndDelete(id)
