@@ -25,15 +25,24 @@ router
 router
   .post('/', async (req, res) => {
     const { name, isCustomer, email, password } = req.body;
-    const user = new User({
+
+    let user = await User
+      .findOne({ email: email })
+    if(user) return res.status(302).send('Ese usuario ya existe')
+
+    user = new User({
       name: name,
-      isCustomer: isCustomer,
+      isCustomer: false,
       email: email,
       password: password
     })
 
     const result = await user.save();
-    res.status(201).send(result);
+    res.status(201).send({
+      _id: user._id,
+      name: user.name,
+      email: user.email
+    });
   });
 
 router
