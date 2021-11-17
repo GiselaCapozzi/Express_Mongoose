@@ -30,16 +30,16 @@ router
 // Modelo de datos Embebido
 router
   .post('/', async (req, res) => {
-    const { id } = req.body;
+    const { companyId } = req.body;
 
     const company = await Company
-      .findById(id)
+      .findById(companyId)
 
     if (!company) return res.status(400).send('No tenemos ese fabricante')
 
     const { model, year, sold, price, extras } = req.body;
     const car = new Car({
-      company,
+      company: company,
       model,
       year,
       sold,
