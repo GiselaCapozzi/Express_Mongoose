@@ -46,8 +46,7 @@ router
     res.status(201).send({
       _id: user._id,
       name: user.name,
-      email: user.email,
-      password: user.password
+      email: user.email
     });
   });
 

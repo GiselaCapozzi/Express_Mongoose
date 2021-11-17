@@ -6,6 +6,7 @@ const car = require('./routes/cars');
 const user = require('./routes/users');
 const companies = require('./routes/companies');
 const sales = require('./routes/sales');
+const auth = require('./routes/auth');
 
 const PORT = process.env.PORT || 3003;
 const date = require('./date');
@@ -20,6 +21,7 @@ app.use('/api/cars/', car);
 app.use('/api/users/', user);
 app.use('/api/companies', companies);
 app.use('/api/sales', sales);
+app.use('api/auth', auth);
 
 mongoose.connect('mongodb://localhost:27017/carsdb2')
   .then(() => console.log('Conectado a MongoDB'))
